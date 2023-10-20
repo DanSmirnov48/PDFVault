@@ -1,13 +1,12 @@
 "use client";
-import { viewS3Files, deleteS3File, countS3Files } from "@/lib/s3";
 import React, { useEffect, useState } from "react";
-import { Inbox, Loader2, File, Trash2, Download } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useFileList } from "@/components/Provider";
-import { Button } from "./ui/button";
-import toast from "react-hot-toast";
-import { FileDownloadButton } from "@/components/DownloadFile";
+import { DownloadFile } from "@/components/DownloadFile";
+import { PreviewFile } from "./PreviewFile";
+import { DeleteFile } from "./DeleteFile";
 
-const ViewS3Files = () => {
+export default function ViewS3Files() {
   const { fileList, loadFiles } = useFileList();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,30 +40,23 @@ const ViewS3Files = () => {
         <h1 className="mt-4 text-lg text-black">List is empty</h1>
       ) : (
         <div className="mt-7">
-          {/* <h1 className="mt-4 text-lg text-black">My Files</h1> */}
+          <h1 className="mt-4 text-lg text-slate-600">
+            My Files:{" "}
+            <span className="font-semibold text-slate-700">
+              {fileList.length} / 3
+            </span>
+          </h1>
           <ul className="flex flex-col">
             {fileList.map((file, index) => (
               <li
                 className="flex items-center justify-between py-3 px-12 text-sm font-medium odd:bg-gray-100 bg-white border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:odd:bg-slate-800 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                 key={index}
               >
-                <span>{extractFileName(file.name)}</span>
+                <h1>{extractFileName(file.name)}</h1>
                 <div className="space-x-2 ml-6">
-                  <Button
-                    onClick={async () => {
-                      try {
-                        await deleteS3File(file.key);
-                        toast.success("File Deleted");
-                        await loadFiles();
-                      } catch (error) {
-                        console.error("Error deleting file:", error);
-                        toast.error("Something went wrong");
-                      }
-                    }}
-                  >
-                    <Trash2 />
-                  </Button>
-                  <FileDownloadButton fileKey={file.key} fileName={file.name} />
+                  <DeleteFile fileKey={file.key} />
+                  <DownloadFile fileKey={file.key} fileName={file.name} />
+                  <PreviewFile pdf_url={file.key} />
                 </div>
               </li>
             ))}
@@ -73,6 +65,4 @@ const ViewS3Files = () => {
       )}
     </div>
   );
-};
-
-export default ViewS3Files;
+}

@@ -1,5 +1,4 @@
 import React from "react";
-import { getS3Url } from "@/lib/s3";
 import { Download } from "lucide-react";
 import { Button } from "./ui/button";
 
@@ -8,7 +7,7 @@ interface FileDownloadButtonProps {
   fileName: string;
 }
 
-export const FileDownloadButton: React.FC<FileDownloadButtonProps> = ({
+export const DownloadFile: React.FC<FileDownloadButtonProps> = ({
   fileKey,
   fileName,
 }) => {
